@@ -14,7 +14,7 @@ hostname = "netapps.ece.vt.edu"
 vhost = "/2014/fall/archon"
 #User name and password
 user = "archon"
-password = Power^Overwhelming96
+password = "Power^Overwhelming96"
 #Topic to suscribe to
 rout_key = "messagescroll"
 # Connect to the message broker
@@ -33,7 +33,7 @@ class RazzleDazzlePage(Resource):
 		# Set POST message to a variable
 		output=cgi.escape(request.args["message-field"][0])
 		# Send the message
-                channel.basic_publish(exchange="razzledazzle_twist", routing_key=rout_key, body=output)
+		channel.basic_publish(exchange="razzledazzle_twist", routing_key=rout_key, body=output)
 		return
 		"""
 			<html>
