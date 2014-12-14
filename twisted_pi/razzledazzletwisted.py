@@ -16,7 +16,7 @@ vhost = "/2014/fall/archon"
 user = "archon"
 password = Power^Overwhelming96
 #Topic to suscribe to
-routing_key = "messagescroll"
+rout_key = "messagescroll"
 # Connect to the message broker
 msg_broker = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, virtual_host=vhost, credentials=pika.PlainCredentials(user, password, True)))
 # Setup the exchange
@@ -32,6 +32,8 @@ class RazzleDazzlePage(Resource):
 	def render_POST(self, request):
 		# Set POST message to a variable
 		output=cgi.escape(request.args["message-field"][0])
+		# Send the message
+                channel.basic_publish(exchange="razzledazzle_twist", routing_key=rout_key, body=output)
 		return
 		"""
 			<html>
@@ -43,3 +45,9 @@ class RazzleDazzlePage(Resource):
 factory = Site(RazzleDazzlePage())
 reactor.listenTCP(10000, factory)
 reactor.run()
+
+# Close the connection
+if channel is not None:
+    channel.close()
+if msg_broker is not None:
+    msg_broker.close()
