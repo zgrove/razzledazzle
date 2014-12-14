@@ -34,8 +34,7 @@ class RazzleDazzlePage(Resource):
 		output=cgi.escape(request.args["message-field"][0])
 		# Send the message
 		channel.basic_publish(exchange="razzledazzle_twist", routing_key=rout_key, body=output)
-		return
-		"""
+		return """
 			<html>
 				<body>You submitted: %s</body>
 			</html>
