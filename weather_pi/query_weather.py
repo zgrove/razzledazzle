@@ -19,7 +19,7 @@ hostarg = "netapps.ece.vt.edu"
 # The virtual host to connect to
 vhostarg = "/2014/fall/archon" # Defaults to the root virtual host
 # The routing key
-routing_keyarg = "weather_query"
+routing_keyarg = "messagescroll"
 #Login name
 cred_login = "archon"
 #Login password
@@ -29,7 +29,7 @@ msg_broker = pika.BlockingConnection(
 	pika.ConnectionParameters(host=hostarg, virtual_host=vhostarg, credentials=pika.PlainCredentials(cred_login, cred_pass, True)))
 
 channel = msg_broker.channel()
-channel.exchange_declare(exchange="weather_query", type="direct")
+channel.exchange_declare(exchange="razzledazzle_twist", type="direct")
 channel.queue_declare(exclusive=True)
 
 response = {"location": "", "weather": "", "temperature": ""}
@@ -45,8 +45,8 @@ while True:
     response["location"] = weather_result["display_location"]["full"]
     response["weather"] = weather_result["weather"]
     response["temperature"] = weather_result["temperature_string"]
-    print response
-    channel.basic_publish(exchange="weather_query", routing_key=routing_keyarg, body=json.dumps(response, indent=4))
+    #channel.basic_publish(exchange="razzledazzle_twisted", routing_key=routing_keyarg, body=json.dumps(response, indent=4))
+    channel.basic_publish(exchange="razzledazzle_twist", routing_key=routing_keyarg, body=response["temperature"])
     time.sleep(frequency)
 
 if channel is not None:
