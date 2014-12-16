@@ -27,18 +27,23 @@ channel.queue_declare(exclusive=True)
 class RazzleDazzlePage(Resource):
 	isLeaf = True
 	def render_GET(self, request):
-		return subprocess.check_output("cat razzledazzlepage.html", shell=True);
+		return subprocess.check_output("cat razzledazzlepage.html", shell=True)
 
 	def render_POST(self, request):
 		# Set POST message to a variable
 		output=cgi.escape(request.args["message-field"][0])
-		# Send the message
-		channel.basic_publish(exchange="razzledazzle_twist", routing_key=rout_key, body=output)
-		return """
-			<html>
-				<body>You submitted: %s</body>
-			</html>
-		""" % (cgi.escape(request.args["message-field"][0]), )
+		zipCodeText = cgi.escape(request.args["zipCode-field"][0])
+		if len(zipCodeText) > 0 and int(zipCodeText) >= 0 and int(zipCodeText) < 100000:
+			subprocess.check_output("echo " + zipCodeText + "> ../weather_pi/zipcode.txt", shell=True)
+		else:
+			# Send the message
+			channel.basic_publish(exchange="razzledazzle_twist", routing_key=rout_key, body=output)
+		#return """
+		#	<html>
+		#		<body>You submitted: %s</body>
+		#	</html>
+		#""" % (cgi.escape(request.args["message-field"][0]), )
+		return subprocess.check_output("cat razzledazzlepage.html", shell=True)
 		
 
 factory = Site(RazzleDazzlePage())
